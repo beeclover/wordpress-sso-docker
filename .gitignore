@@ -1,0 +1,4 @@
+volume
+.env
+node_modules
+.temp
