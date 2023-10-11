@@ -75,3 +75,11 @@ Token Endpoint를 아래처럼
 ![](./docs/SCR-20231007-cvsa.png)
 
 로그인완료!
+
+## keycloak production
+
+https://github.com/asatrya/keycloak-traefik-tutorial/blob/master/docker-compose.yml
+
+keycloak production 모드가 아니라면 도메인을 설정하였을때 `/admin`으로 넘어갈때 iframe으로 인증절차를 하도록되어있는데 앱 내부에서 dev모드로 실행하면 `http`로 되어서 cors 오류가나게된다.
+
+그래서 프로덕션모드로 실행하는 방법을 찾게되었다.
