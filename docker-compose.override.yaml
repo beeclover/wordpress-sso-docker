@@ -5,6 +5,19 @@ networks:
     external: true
 
 services:
+  keycloak:
+    networks:
+      - traefik_proxy
+      - default
+    environment:
+      HTTPS_METHOD: redirect
+      PROXY_ADDRESS_FORWARDING: 'true'
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${SERVICE}-keycloak.rule=Host(`keycloak-${DOMAIN}`)
+      - traefik.http.services.${SERVICE}-keycloak.loadbalancer.server.port=8080
+      - traefik.http.routers.${SERVICE}-keycloak.entrypoints=https
+      - traefik.http.routers.${SERVICE}-keycloak.tls.certresolver=leresolver
   wordpress:
     networks:
       - traefik_proxy
@@ -15,8 +28,3 @@ services:
       - traefik.http.services.${SERVICE}.loadbalancer.server.port=80
       - traefik.http.routers.${SERVICE}.entrypoints=https
       - traefik.http.routers.${SERVICE}.tls.certresolver=leresolver
-      # http to https redirect
-      #- traefik.http.routers.${SERVICE}.entrypoints=webs
-      #- traefik.http.routers.${SERVICE}.tls.certresolver=leresolver
-      #- traefik.http.middlewares.${SERVICE}.redirectscheme.scheme=https
-      #- traefik.http.middlewares.${SERVICE}.redirectscheme.permanent=true

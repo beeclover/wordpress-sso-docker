@@ -2,14 +2,28 @@ version: '3.8'
 
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:22.0.4
-    container_name: keycloak
+    image: jboss/keycloak
+    depends_on:
+      - keycloak-db
     environment:
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-    ports:
-      - "8081:8080"
-    command: start-dev
+      KEYCLOAK_USER: ${KEYCLOAK_USER}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+      DB_VENDOR: mariadb
+      DB_ADDR: keycloak-db
+      DB_PORT: 3306
+      DB_DATABASE: keycloak
+      DB_USER: root
+      DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+    command: ["-b", "0.0.0.0", "-Dkeycloak.profile.feature.docker=enabled"]
+
+  keycloak-db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_DATABASE: keycloak
+      MYSQL_ROOT_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+    volumes:
+      - ./volume/keycloak/db/data:/var/lib/mysql
 
   wordpress:
     image: wordpress:6.2-php8.0-apache
